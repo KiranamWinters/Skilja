@@ -1,0 +1,6 @@
+#include <stdio.h>
+
+@THIS IS COMMENT
+_mem8b var1 = 20 80;
+mem16b var2 = "I am string";
+mem32b var3 = "EL GIGANTE";

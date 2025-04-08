@@ -1,0 +1,27 @@
+var8b = 89 + 89 + 2923 * 647 / 13;
+
+var16b == 20;
+
+loop <int i, int b> (loop_condition: i < 10)
+{
+        i++;
+        b++;
+}
+
+<mem8, mem16> my_func{
+        
+}
+
+
+
+mem8 execute(){
+        
+}
+
+@shell_print()
+@shell_input()
+@shell_print_pair()
+@shell_print_struct()
+
+
+//Hellow this i scommbet
