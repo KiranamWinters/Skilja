@@ -5,13 +5,14 @@ SRC := $(wildcard *.c ../Lexer/*.c ../file_handler/*.c)
 
 OBJECT := $(notdir $(SRC:.c=.o))
 
-CFLAGS :=  -O2
+CFLAGS :=  -O2 -Werror -Wextra -Wall
 
 parser : $(OBJECT)
 	$(CC) $(OBJECT) -o parser
 
 # $< = %.c (dependency)
 # $@ = %.o (target)
+#
 %.o : %.c
 	@echo "Compiling $< ----> $@"
 	$(CC) $(CFLAGS) -c $(SRC) $<

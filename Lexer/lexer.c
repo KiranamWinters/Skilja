@@ -98,7 +98,7 @@ const char* KEYWORD_LIST[] = {
 #define KEYWORD_COUNT sizeof(KEYWORD_LIST)/sizeof(KEYWORD_LIST[0])
 
 void check_keyword(Token *t){
-        for (int i = 0; i < KEYWORD_COUNT; i++){
+        for (unsigned long i = 0; i < KEYWORD_COUNT; i++){
                 if(!strncmp(t->str, KEYWORD_LIST[i], strlen(KEYWORD_LIST[i]))){
                        t->type = TOKEN_KEYWORD;
                        return;
@@ -121,13 +121,22 @@ void check_repeated_symbols(Lexer *l,Token *token){
         }
         
         if(token->type == t.type){
-                token->type =    TOKEN_EXTENDED;
-                token->size += 1;
-                l->pointer      += 1;
+                token->type      =  TOKEN_EXTENDED;
+                token->size     +=  1;
+                l->pointer      +=  1;
                 return;
         }
 
 }
+
+bool check_semicolon_token(Token *t){
+        if(t->str[0] == ';'){
+                t->type = TOKEN_SEMICOLON;
+                return true;
+        }
+        return false;
+}
+
 
 Token lexer_next(Lexer *l){
         skip_whitespace(l);
@@ -141,17 +150,18 @@ Token lexer_next(Lexer *l){
 
 
         //CHECKING FOR LITERALS
-        for(int i = 0; i < LITERAL_SYMBOLS_SIZE;i++){
+        for(unsigned long i = 0; i < LITERAL_SYMBOLS_SIZE;i++){
                 if(l->content[l->pointer] == LITERAL_SYMBOLS[i]){
                         token.type = TOKEN_LITERAL;
                         token.size++;
                         l->pointer++;
+                        check_semicolon_token(&token);
                         return token;
                 }
         }
 
         //CHECKING FOR OPERATORS
-        for(int i = 0; i < OPERATOR_LIST_SIZE; i++){
+        for(unsigned long i = 0; i < OPERATOR_LIST_SIZE; i++){
                 if(l->content[l->pointer] == OPERATOR_LIST[i]){
                         token.size += 1;
                         l->pointer++;
