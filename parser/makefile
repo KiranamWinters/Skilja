@@ -3,9 +3,11 @@ BUILD := .
 
 SRC := $(wildcard *.c ../Lexer/*.c ../file_handler/*.c)
 
+INCLUDE := 
+
 OBJECT := $(notdir $(SRC:.c=.o))
 
-CFLAGS :=  -O2 -Werror -Wextra -Wall
+CFLAGS :=  -O2 -Wextra -Wall
 
 parser : $(OBJECT)
 	$(CC) $(OBJECT) -o parser
@@ -15,7 +17,7 @@ parser : $(OBJECT)
 #
 %.o : %.c
 	@echo "Compiling $< ----> $@"
-	$(CC) $(CFLAGS) -c $(SRC) $<
+	$(CC) $(CFLAGS) -c -g $(SRC) $<
 
 clean:
 	rm -f parser $(OBJECT)

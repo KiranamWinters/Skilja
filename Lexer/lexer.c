@@ -14,33 +14,35 @@
 #include "../file_handler/file_handler.h"
 
 const char* TOKEN_LOOKUP[] = {
+
         "TOKEN_EOF",
         "INVALID_TOKEN",
         "TOKEN_STRING",
+        "TOKEN_PLUS",
+        "TOKEN_MINUS",
+        "TOKEN_STAR",
+        "TOKEN_LESS_THAN",
+        "TOKEN_GREATER_THAN",
+        "TOKEN_SLASH",
+        "TOKEN_NOT",
+        "TOKEN_EQUALS",
+        "TOKEN_MODULUS",
         "TOKEN_COMMENT",
         "TOKEN_PREPROCESSOR",
         "TOKEN_UNKNOWN",
         "TOKEN_SYMBOL",
         "TOKEN_SEMICOLON",
-        "TOKEN_NUMBER",
+        "TOKEN_INTEGER",
         "TOKEN_BRACKET",
         "TOKEN_SQUARE_BRACKET",
         "TOKEN_BLOCK_BRACKET",
         "TOKEN_OPERATOR",
         "TOKEN_LITERAL",
         "TOKEN_KEYWORD",
-        "TOKEN_PLUS",
-        "TOKEN_MINUS",
-        "TOKEN_STAR",
-        "TOKEN_LESS_THAN",
-        "TOKEN_GREATER_THAN",
-        "TOKEN_NOT",
-        "TOKEN_EQUALS",
-        "TOKEN_MODULUS",
         "TOKEN_AMPERSAND",
-        "TOKEN_SLASH",
         "TOKEN_EXTENDED",
-        "TOKEN_DEBUG"
+        "TOKEN_DEBUG",
+        "TOKEN_VARIABLE_TYPE"
 };
 
 //This does not remove the whitespace, it merely ignores them
@@ -92,9 +94,12 @@ const char* KEYWORD_LIST[] = {
         "typedef","struct",
         "true", "false",
         "mem8","mem16","mem32","mem64","mem128",
-        
 };
+#define VARIABLE_DECLARTION_KEYWORDS_COUNT sizeof(VARIABLE_DECLARTION_KEYWORDS)/sizeof(VARIABLE_DECLARTION_KEYWORDS[0])
+const char* VARIABLE_DECLARTION_KEYWORDS[] = {
+        "mem8","mem16","mem32","mem64","mem128"
 
+};
 #define KEYWORD_COUNT sizeof(KEYWORD_LIST)/sizeof(KEYWORD_LIST[0])
 
 void check_keyword(Token *t){
@@ -173,7 +178,7 @@ Token lexer_next(Lexer *l){
         
         //NUMBERICAL CHARACTER CHECKER
         if(isdigit(l->content[l->pointer])){
-                token.type = TOKEN_NUMBER;
+                token.type = TOKEN_INTEGER;
                 while(isdigit(l->content[l->pointer]) && l->pointer < l->content_len){
                         l->pointer++;
                 }
@@ -230,6 +235,14 @@ Token lexer_next(Lexer *l){
                                 }
                                 token.size = &l->content[l->pointer] - token.str;
                                 check_keyword(&token);
+                                if(token.type == TOKEN_KEYWORD){
+                                        for(unsigned long i = 0; i < VARIABLE_DECLARTION_KEYWORDS_COUNT; i++){
+                                                if(!strncmp(token.str, VARIABLE_DECLARTION_KEYWORDS[i], strlen(VARIABLE_DECLARTION_KEYWORDS[i]))){
+                                                        token.type = TOKEN_VARIABLE_TYPE;
+                                                        return token;
+                                                }  
+                                        }
+                                }
                                 return token;
                         }       break;
 
@@ -258,8 +271,8 @@ void print_token(Token t){
         printf("%s : %.*s\n",token_as_str(t.type),(int)t.size,t.str);
 }
 
-int main2(){
-        const char* src = load_file_into_memory("lexer.c");
+int main(int argc, char* argv[]){
+        const char* src = load_file_into_memory(argv[1]);
         Lexer l = init_lexer(src, strlen(src));
         Token t = lexer_next(&l);
         while(t.type != TOKEN_EOF){

@@ -6,7 +6,7 @@
 #define MAX_STATEMENT_SIZE 200
 
 
-int main4(){
+int damain4(){
         char buffer[MAX_STATEMENT_SIZE];
         while(1){
                 printf(">> ");
